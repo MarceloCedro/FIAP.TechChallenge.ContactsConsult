@@ -4,7 +4,7 @@ name: First Workflow GitHub Actions GO
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ main, developer ]
+    branches: [ main, developer,master ]
   pull_request:
     branches: [ main, developer ]
 
@@ -45,4 +45,17 @@ jobs:
         run: dotnet build --no-restore
 
       - name: Unit and Integration Tests 
-        run: dotnet test --no-build --verbosity normal         
+        run: dotnet test --no-build --verbosity normal           
+
+      - name: Set Up Kubernets          
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{secrets.KUBE_CONFIG}}
+          version: 1.21.0
+
+      - name: Make script executable
+        run: chmod +x ./ContactsConsult.Api/Kubernets/deploy.sh
+
+      - name: Deploy to AKS
+        run: bash ./ContactsConsult.Api/Kubernets/deploy.sh
