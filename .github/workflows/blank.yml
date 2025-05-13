@@ -58,4 +58,5 @@ jobs:
         run: chmod +x ./ContactsConsult.Api/Kubernets/deploy.sh
 
       - name: Deploy to AKS
-        run: bash ./ContactsConsult.Api/Kubernets/deploy.sh
+        run: bash deploy.sh
+        working-directory: ./ContactsConsult.Api/Kubernets/
