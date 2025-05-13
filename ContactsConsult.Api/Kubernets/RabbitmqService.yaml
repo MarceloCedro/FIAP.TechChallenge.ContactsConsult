@@ -31,3 +31,19 @@ spec:
       targetPort: 15672
       nodePort: 31672
   type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-lb
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      port: 30671
+      targetPort: 5672       
+    - name: management
+      port: 31671       
+      targetPort: 15672
+  type: LoadBalancer  
