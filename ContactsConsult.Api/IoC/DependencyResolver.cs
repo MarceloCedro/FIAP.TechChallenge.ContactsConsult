@@ -6,10 +6,10 @@ namespace FIAP.TechChallenge.ContactsConsult.Api.IoC
 {
     public static class DependencyResolver
     {
-        public static void AddDependencyResolver(this IServiceCollection services, string connectionString)
+        public static void AddDependencyResolver(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddRepositoriesDependency();
-            services.AddDbContextDependency(connectionString);
+            services.AddRepositoriesDependency(configuration);
+            services.AddDbContextDependency(configuration.GetConnectionString("DefaultConnection"));
             services.AddServicesDependency();
             services.AddApplicationDependency();
             services.AddAuthenticationDependency();

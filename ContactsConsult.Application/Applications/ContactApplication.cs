@@ -1,4 +1,6 @@
-﻿using FIAP.TechChallenge.ContactsConsult.Domain.DTOs.EntityDTOs;
+﻿using Elastic.Clients.Elasticsearch;
+using FIAP.TechChallenge.ContactsConsult.Domain.DTOs.EntityDTOs;
+using FIAP.TechChallenge.ContactsConsult.Domain.Entities;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Applications;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Services;
 using Microsoft.Extensions.Logging;
@@ -10,6 +12,9 @@ namespace FIAP.TechChallenge.ContactsConsult.Application.Applications
         private readonly IContactService _contactService = contactService;
 
         private readonly ILogger<ContactApplication> _logger = logger;
+
+        public async Task<IReadOnlyCollection<Contact>> GetContactsElastic(int page, int size)
+            => await _contactService.GetContactsElastic(page, size);
 
         public async Task<IEnumerable<ContactDto>> GetAllContactsAsync()
         {

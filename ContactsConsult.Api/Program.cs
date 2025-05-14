@@ -1,13 +1,12 @@
 using FIAP.TechChallenge.ContactsConsult.Api.IoC;
 using FIAP.TechChallenge.ContactsConsult.Api.Logging;
 using FIAP.TechChallenge.ContactsConsult.Api.Middleware;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDependencyResolver(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddDependencyResolver(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
