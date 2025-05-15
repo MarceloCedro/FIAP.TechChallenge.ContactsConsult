@@ -5,7 +5,7 @@ metadata:
   annotations:
     autor: Marcelo Cedro
 spec:
-  replicas: 3  # Número de réplicas (pods) da aplicação
+  replicas: 1  # Número de réplicas (pods) da aplicação
   selector:
     matchLabels:
       app: kubernetes-api
