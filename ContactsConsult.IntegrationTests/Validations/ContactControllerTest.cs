@@ -2,6 +2,7 @@
 using FIAP.TechChallenge.ContactsConsult.Application.Applications;
 using FIAP.TechChallenge.ContactsConsult.Domain.Entities;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Applications;
+using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.ElasticSearch;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Repositories;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Services;
 using FIAP.TechChallenge.ContactsConsult.Domain.Services;
@@ -15,6 +16,7 @@ namespace FIAP.TechChallenge.ContactsConsult.IntegrationTest.Validations
 {
     public class ContactControllerTest : BaseServiceTests
     {
+        private readonly Mock<IElasticClient<Contact>> _elasticClientMock;
         private readonly ContactsController _contactsController;
         private readonly IContactApplication _contactApplication;
         private readonly IContactService _contactService;
@@ -25,12 +27,13 @@ namespace FIAP.TechChallenge.ContactsConsult.IntegrationTest.Validations
         public readonly Random RandomId;
 
         public ContactControllerTest()
-        {            
+        {
+            _elasticClientMock = new Mock<IElasticClient<Contact>>();
             _contactRepository = new ContactRepository(_context);
             _loggerServiceMock = new Mock<ILogger<ContactService>>();
             _loggerApplicationMock = new Mock<ILogger<ContactApplication>>();
             _loggerControllerMock = new Mock<ILogger<ContactsController>>();
-            _contactService = new ContactService(_contactRepository, _loggerServiceMock.Object);
+            _contactService = new ContactService(_contactRepository, _loggerServiceMock.Object, _elasticClientMock.Object);
             _contactApplication = new ContactApplication(_contactService, _loggerApplicationMock.Object);
             _contactsController = new ContactsController(_contactApplication, _loggerControllerMock.Object);
             RandomId = new Random();

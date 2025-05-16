@@ -1,5 +1,6 @@
 ﻿using FIAP.TechChallenge.ContactsConsult.Api.Logging;
 using FIAP.TechChallenge.ContactsConsult.Domain.DTOs.EntityDTOs;
+using FIAP.TechChallenge.ContactsConsult.Domain.Entities;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Applications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +83,27 @@ namespace FIAP.TechChallenge.ContactsConsult.Api.Controllers
             try
             {
                 return await _contactService.GetContactByEmailAsync(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Método para buscar contatos no ElasticCloud.
+        /// </summary>
+        /// <returns> Retorna uma lista de contatos filtrados pelo Email no formato Json</returns>
+        [HttpGet("elastic")]
+        [Authorize]
+        public async Task<IReadOnlyCollection<Contact>> GetContactElastic([FromQuery] int page, [FromQuery] int size)
+        {
+            _logger.LogInformation("Buscando contatos no Elastic Cloud");
+
+            try
+            {
+                return await _contactService.GetContactsElastic(page, size);
             }
             catch (Exception ex)
             {

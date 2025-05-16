@@ -26,4 +26,8 @@ kubectl apply -f RabbitmqDeployment.yaml  # Aplica o Service da aplicação
 echo "🚪 Aplicando Rabbitmq Service..."
 kubectl apply -f RabbitmqService.yaml  # Aplica o Service da aplicação
 
+# Aplicando o HPA
+echo "📈 Aplicando Horizontal Pod Autoscaler (HPA)..."
+kubectl apply -f hpa.yaml  # Aplica o HPA a partir do arquivo hpa.yaml
+
 echo "✅ Tudo aplicado com sucesso!"

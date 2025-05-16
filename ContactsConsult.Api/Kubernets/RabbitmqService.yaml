@@ -31,7 +31,7 @@ spec:
       port: 15672
       targetPort: 15672
       nodePort: 31672
-  type: NodePort  
+  type: NodePort
 ---
 apiVersion: v1
 kind: Service
