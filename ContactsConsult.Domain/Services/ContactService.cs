@@ -1,14 +1,16 @@
-﻿using Elastic.Clients.Elasticsearch.Nodes;
+﻿using Elastic.Clients.Elasticsearch.MachineLearning;
+using Elastic.Clients.Elasticsearch.Nodes;
 using FIAP.TechChallenge.ContactsConsult.Domain.Entities;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.ElasticSearch;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Repositories;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Services;
 using Microsoft.Extensions.Logging;
+using System.Drawing;
 
 namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
 {
     public class ContactService(
-        IContactRepository contactRepository, 
+        IContactRepository contactRepository,
         ILogger<ContactService> logger,
         IElasticClient<Contact> elasticClient) : IContactService
     {
@@ -16,20 +18,9 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
         private readonly ILogger<ContactService> _logger = logger;
         private readonly IElasticClient<Contact> _elasticClient = elasticClient;
 
-        public async Task<IReadOnlyCollection<Contact>> GetContactsElastic(int page, int size)
+        public async Task<IReadOnlyCollection<Contact>> GetAllContactsElastic(int page, int size)
         {
-            var contact = new Contact
-            {
-                Id = 3,
-                Name = "Marcelo Henrique",
-                AreaCode = "11",
-                Phone = "974895236",
-                Email = "testefiap@gmail.com"
-            };
-
-            var result = await _elasticClient.Create(contact, "contacts");
-
-            var documents = await _elasticClient.Get(page, size, "contacts");
+            var documents = await _elasticClient.Get(page, size, "contacts-indexed-v2");
             return documents;
         }
 
@@ -47,11 +38,20 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
             }
         }
 
-        public async Task<IEnumerable<Contact>> GetAllAsync()
+        public async Task<IEnumerable<Contact>> GetAllAsync(bool useElastic = true)
         {
             try
             {
-                return await _contactRepository.GetAllAsync();
+                if (useElastic)
+                {
+                    var indexedContacts = await GetAllContactsElastic(0, 10000);
+                    if (indexedContacts.Any())
+                        return indexedContacts;
+                    else
+                        return await _contactRepository.GetAllAsync();
+                }
+                else
+                    return await _contactRepository.GetAllAsync();
             }
             catch (Exception e)
             {
@@ -80,8 +80,8 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
             try
             {
                 var contactEmailList = await _contactRepository.GetByEmailAsync(email);
-                return contactEmailList != null && contactEmailList.Any() ? 
-                       contactEmailList.FirstOrDefault() : 
+                return contactEmailList != null && contactEmailList.Any() ?
+                       contactEmailList.FirstOrDefault() :
                        null;
             }
             catch (Exception e)

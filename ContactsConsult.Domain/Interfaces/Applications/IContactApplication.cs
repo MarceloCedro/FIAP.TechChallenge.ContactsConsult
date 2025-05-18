@@ -7,7 +7,7 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Applications
     {
         Task<IReadOnlyCollection<Contact>> GetContactsElastic(int page, int size);
 
-        Task<IEnumerable<ContactDto>> GetAllContactsAsync();
+        Task<IEnumerable<ContactDto>> GetAllContactsAsync(bool useElastic = true);
 
         Task<ContactDto?> GetContactByIdAsync(int id);
 

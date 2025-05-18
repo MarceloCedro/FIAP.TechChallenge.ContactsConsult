@@ -4,6 +4,7 @@ using FIAP.TechChallenge.ContactsConsult.Domain.Entities;
 using FIAP.TechChallenge.ContactsConsult.Domain.Interfaces.Applications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FIAP.TechChallenge.ContactsConsult.Api.Controllers
 {
@@ -103,7 +104,18 @@ namespace FIAP.TechChallenge.ContactsConsult.Api.Controllers
 
             try
             {
-                return await _contactService.GetContactsElastic(page, size);
+                Stopwatch timer = Stopwatch.StartNew();
+                Stopwatch timer2 = Stopwatch.StartNew();
+
+                timer.Start();
+                var testeComElastic = await _contactService.GetAllContactsAsync(true);
+                timer.Stop();
+
+                timer2.Start();
+                var testeSemElastic = await _contactService.GetAllContactsAsync(false);
+                timer2.Stop();
+
+                return null;
             }
             catch (Exception ex)
             {

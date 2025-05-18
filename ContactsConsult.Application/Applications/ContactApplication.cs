@@ -14,13 +14,13 @@ namespace FIAP.TechChallenge.ContactsConsult.Application.Applications
         private readonly ILogger<ContactApplication> _logger = logger;
 
         public async Task<IReadOnlyCollection<Contact>> GetContactsElastic(int page, int size)
-            => await _contactService.GetContactsElastic(page, size);
+            => await _contactService.GetAllContactsElastic(page, size);
 
-        public async Task<IEnumerable<ContactDto>> GetAllContactsAsync()
+        public async Task<IEnumerable<ContactDto>> GetAllContactsAsync(bool useElastic = true)
         {
             try
             {
-                var contacts = await _contactService.GetAllAsync();
+                var contacts = await _contactService.GetAllAsync(useElastic);
                 var contactDtos = new List<ContactDto>();
 
                 foreach (var contact in contacts)
