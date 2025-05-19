@@ -28,7 +28,11 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
         {
             try
             {
-                return await _contactRepository.GetByIdAsync(id);
+                var contactIdIndexed = (await _elasticClient.GetByJsonId(id, "contacts-indexed-v2")).FirstOrDefault();
+                if (contactIdIndexed != null)
+                    return contactIdIndexed;
+                else
+                    return await _contactRepository.GetByIdAsync(id);
             }
             catch (Exception)
             {
@@ -79,10 +83,16 @@ namespace FIAP.TechChallenge.ContactsConsult.Domain.Services
         {
             try
             {
-                var contactEmailList = await _contactRepository.GetByEmailAsync(email);
-                return contactEmailList != null && contactEmailList.Any() ?
-                       contactEmailList.FirstOrDefault() :
-                       null;
+                var emailIndexed = (await _elasticClient.GetByEmail(email, "contacts-indexed-v2")).FirstOrDefault();
+                if (emailIndexed != null)
+                    return emailIndexed;
+                else
+                {
+                    var contactEmailList = await _contactRepository.GetByEmailAsync(email);
+                    return contactEmailList != null && contactEmailList.Any() ?
+                           contactEmailList.FirstOrDefault() :
+                           null;
+                }
             }
             catch (Exception e)
             {
